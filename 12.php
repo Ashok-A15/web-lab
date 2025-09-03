@@ -1,45 +1,65 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Login Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+
+    <style>
+        .container {
+            margin: 50px auto;
+            width: 400px;
+            padding: 30px;
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        input {
+            font-size: 12px;
+            padding: 10px;
+            margin: 5px;
+            border-radius: 2px;
+            width: 70%;
+        }
+    </style>
+
 </head>
-<body style="font-family: Arial; background-color: #f0f0f0;">
-    <h2 style="text-align:center;">Login</h2>
+<body>
+    <div class="container">
+        <h2>Login</h2>
+        <form action="" method="POST">
+            <label for="username">Username:</label><br>
+            <input type="text" id="username" name="username"><br><br>
+            <label for="password">Password:</label><br>
+            <input type="password" id="password" name="password"><br><br>
+            <button type="submit">Login</button>
+        </form>
+    </div>
 
     <?php
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $username = $_POST['username'];
-        $password = $_POST['password'];
-
-        $file = fopen("users.txt", "r");
-        $authenticated = false;
+        $uname = $_POST["username"];
+        $pass = $_POST["password"];
+        $file = fopen("login.txt", "r");
+        
+        $is_valid = false;
 
         while (($line = fgets($file)) !== false) {
-            list($stored_user, $stored_pass) = explode(":", trim($line));
-            if ($username === $stored_user && $password === $stored_pass) {
-                $authenticated = true;
+            $content = trim($line);
+            if ($content == $uname . ":" . $pass) {
+                $is_valid = true;
                 break;
             }
         }
-
         fclose($file);
 
-        if ($authenticated) {
-            echo "<h3 style='text-align:center; color:green;'>Login successful. Welcome, $username!</h3>";
+        if ($is_valid) {
+            echo "<script>alert('Access granted!');</script>";
         } else {
-            echo "<h3 style='text-align:center; color:red;'>Invalid username or password!</h3>";
+            echo "<script>alert('Incorrect');</script>";
         }
     }
     ?>
-
-    <form action="" method="post" style="width:300px; margin:auto; background:white; padding:20px; border-radius:10px;">
-        <label>Username:</label><br>
-        <input type="text" name="username" required><br><br>
-
-        <label>Password:</label><br>
-        <input type="password" name="password" required><br><br>
-
-        <input type="submit" value="Login">
-    </form>
 </body>
 </html>
